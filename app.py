@@ -13,6 +13,7 @@
 import base64
 import os
 import json
+import datetime
 
 from flask_restful import Resource, Api, reqparse
 from flask_cors import CORS
@@ -32,6 +33,7 @@ sensors = Sensors(login_data)
 
 class Sensorpush(Resource):
 	def get(self):
+		print(f"[{datetime.datetime.now()}] Getting sensor data...")
 		sensor_data = sensors.get_sensors().json()
 		return {"message": "Okay", "data": sensor_data}, 200
 

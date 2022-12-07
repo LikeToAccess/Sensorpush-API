@@ -74,12 +74,12 @@ class Sensors:
 		"""
 		self.authorization_code = self.get_authorization(login_data).json().get("authorization", None)
 		self.access_token = self.get_access_token().json().get("accesstoken", None)
-		if not self.access_token:
-			os.remove("login.json")
-			raise Exception("Unable to get access token. Check your credentials.")
 		if not self.authorization_code:
 			os.remove("login.json")
 			raise Exception("Unable to get authorization code. Check your credentials.")
+		if not self.access_token:
+			os.remove("login.json")
+			raise Exception("Unable to get access token. Check your credentials.")
 
 	@staticmethod
 	def get_authorization(login_data):
@@ -96,7 +96,7 @@ class Sensors:
 		headers = {
 			"accept": "application/json",
 			"Content-Type": "application/json",
-		}	
+		}
 		response = requests.post(
 			os.path.join(BASE_URL, "oauth/authorize"),
 			json=login_data,
