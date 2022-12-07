@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
-# filename          : main.py
+# filename          : sensorpush.py
 # description       : Interact with Sensorpush API
 # author            : Ian Ault
 # email             : aulti@csp.edu
 # date              : 12-02-2022
 # version           : v1.0
-# usage             : python main.py
+# usage             : python sensorpush.py
 # notes             :
 # license           : MIT
 # py version        : 3.11.0 (must run on 3.6 or higher)
@@ -51,6 +51,18 @@ def write_file(filename, data, encoding="utf8"):
 	with open(filename, "w", encoding=encoding) as file:
 		json.dump(data, file, indent=4, sort_keys=True)
 
+def get_login_data(filename="login.json"):
+	if not os.path.exists(filename):
+		login_data = {
+			"email": input("Email: "),
+			"password": getpass.getpass("Password: ")
+		}
+		write_file(filename, login_data)
+	else:
+		login_data = read_file(filename)
+
+	return login_data
+
 
 class Sensors:
 	def __init__(self, login_data):
@@ -84,7 +96,7 @@ class Sensors:
 		headers = {
 			"accept": "application/json",
 			"Content-Type": "application/json",
-		}
+		}	
 		response = requests.post(
 			os.path.join(BASE_URL, "oauth/authorize"),
 			json=login_data,
@@ -140,15 +152,7 @@ def main():
 	"""Main function.
 
 	"""
-	if not os.path.exists("login.json"):
-		login_data = {
-			"email": input("Email: "),
-			"password": getpass.getpass("Password: ")
-		}
-		write_file("login.json", login_data)
-	else:
-		login_data = read_file("login.json")
-
+	login_data = get_login_data()
 	sensors = Sensors(login_data)
 
 	while True:
